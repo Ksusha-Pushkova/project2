@@ -1,0 +1,4 @@
+﻿  Vizualizer.cpp
+C:\Users\Professional\Desktop\c++\муравейник\муравейник\Vizualizer.cpp(96,36): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Professional\Desktop\c++\муравейник\муравейник\Vizualizer.cpp(96,25): warning C4267: инициализация: преобразование из "size_t" в "const int"; возможна потеря данных
+  муравейник.vcxproj -> C:\Users\Professional\Desktop\c++\муравейник\x64\Debug\муравейник.exe
