@@ -21,17 +21,15 @@ Ant::Ant(int initialAge, int initialHealth, Anthill* anthill)
     std::cout << "New ant created! Age: " << age << ", Health: " << health << ", Role: " <<  std::endl;
 }
 
-void Ant::Update() {
-    if (!isAlive) return;
-
-    std::cout << "Ant " << this << " (Age: " << age << ", Health: " << health << ", Role: "  << "): Updating" << std::endl;
-
-    age++;
-    health = std::min(100, health - 1); 
-    
 
 
 
+void Ant::TakeDamage(int damage) {
+    health = std::max(0, health - damage);
+    if (health <= 0) {
+        isAlive = false;
+    }
+}
 
 void Ant::Heal(int amount) {
     health = std::min(100, health + amount);
