@@ -1,6 +1,6 @@
 #include "Anthill.h"
 #include "Ant.h"
-
+#include "Enemy.h"
 #include <algorithm>
 #include <random>
 #include <iostream>
@@ -16,13 +16,33 @@ Anthill::Anthill(int initialSize)
         []() { return std::make_unique<Builder>(); },
         []() { return std::make_unique<Cleaner>(); }
     };
+    for (int i = 0; i < 2; ++i) {  // создаём двух врагов
+        auto enemyAnt = std::make_unique<Ant>(
+            /*age*/ 10,      // Age of the enemy
+            /*health*/ 80,   // Health of the enemy
+            /*informant*/ nullptr,
+            /*anthill*/ this,
+            /*isEnemy*/ true 
+        );
+        enemyAnt->ChangeRole(std::make_unique<EnemyRole>());
+        AddAnt(std::move(enemyAnt));  
+    }
 
-    
+    for (int i = 0; i < std::min(10, maxAnts); ++i) {
+        auto ant = std::make_unique<Ant>(
+            /*age*/ 0,
+            /*health*/ 100,
+            /*informant*/ nullptr,
+            /*anthill*/ this
+        );
 
-   
+        auto role = roleFactories[i % roleFactories.size()]();
+        ant->ChangeRole(std::move(role));
 
         AddAnt(std::move(ant));
     }
+    
+    
 }
 
 void Anthill::AddAnt(std::unique_ptr<Ant> ant) {
@@ -76,6 +96,7 @@ void Anthill::Decay() {
     size = std::max(1, size - 1);
     maxAnts = size * 10;
 }
+
 
 
 
