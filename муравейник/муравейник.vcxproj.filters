@@ -24,9 +24,6 @@
     <ClCompile Include="Vizualizer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Role.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="Informant.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -48,9 +45,6 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="Ant.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="Role.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="EventType.h">

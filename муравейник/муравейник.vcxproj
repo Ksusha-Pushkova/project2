@@ -142,7 +142,6 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Informant.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Role.cpp" />
     <ClCompile Include="Vizualizer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +150,6 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EventType.h" />
     <ClInclude Include="Informant.h" />
-    <ClInclude Include="Role.h" />
     <ClInclude Include="Visualizer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
