@@ -37,7 +37,7 @@ Visualizer::~Visualizer() {
 }
 
 void Visualizer::initFont() {
-    if (!font.loadFromFile("C:\\Users\\Professional\\Desktop\\c++\\anthillcheck\\x64\\Debug\\resources\\fonts\\arial.ttf")) {
+    if (!font.loadFromFile("C:\\Users\\Professional\\Desktop\\c++\\муравейник\\x64\\Debug\\resources\\fonts\\arial.ttf")) {
         std::cerr << "Failed to load arial.ttf! Using fallback font." << std::endl;
         if (!font.loadFromMemory(defaultFontData, defaultFontDataSize)) {
             std::cerr << "Failed to load defaultFontData!" << std::endl;
