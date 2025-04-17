@@ -130,9 +130,9 @@ void Builder::Work(Ant& ant) {
     static std::mt19937 rng((static_cast<unsigned int>(std::time(nullptr))));
     std::uniform_int_distribution<int> dist(0, 100);
 
-    if (dist(rng) < 15) { 
+    if (dist(rng) < 30) { 
         if (auto anthill = ant.GetAnthill()) {
-            int materialsFound = 10 + dist(rng) % 5;
+            int materialsFound = 15 + dist(rng) % 10;
             anthill->AddBuildingMaterials(materialsFound);
             
         }
