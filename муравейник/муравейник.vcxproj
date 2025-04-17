@@ -24,6 +24,7 @@
     <ProjectGuid>{dfc9d4fa-4b74-4315-a220-73a8d2aaaee1}</ProjectGuid>
     <RootNamespace>муравейник</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>муравейник</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -153,6 +154,9 @@
     <ClInclude Include="Informant.h" />
     <ClInclude Include="Role.h" />
     <ClInclude Include="Visualizer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\x64\Debug\Arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

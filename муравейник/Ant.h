@@ -1,17 +1,19 @@
 #pragma once
 #include <memory>
 #include "Role.h"
+#include "Informant.h"
 class Anthill;
 class Ant {
 private:
     int age;
     int health;
     std::unique_ptr<Role> role;
+    Informant* informant;
     bool isAlive;
     Anthill* homeAnthill;
 
 public:
-    Ant(int age, int health, Anthill* anthill, bool isEnemy = false);
+    Ant(int age, int health, Informant* informant, Anthill* anthill, bool isEnemy = false);
 
 
     void Update();

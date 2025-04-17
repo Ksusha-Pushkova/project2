@@ -171,6 +171,12 @@ void Anthill::Decay() {
     maxAnts = size * 10;
 }
 
+void Anthill::HandleAttack() {
+    
+}
+
+
+
 
 
 
