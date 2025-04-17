@@ -69,10 +69,10 @@ void Anthill::AddEnemy(const Enemy& enemy) {
 }
 
 void Anthill::Update() {
-    if (buildingMaterials > 100) {
+    if (buildingMaterials > 150) {
         Expand();
     }
-    else if (buildingMaterials < 10) {
+    else if (buildingMaterials < 30) {
         Decay();
     }
 
