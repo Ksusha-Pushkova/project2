@@ -196,27 +196,27 @@ void Visualizer::drawLarvae() {
 }
 
 void Visualizer::drawEnemies() {
-    const auto& enemies = anthill.GetEnemies();
-    const float centerX = window.getSize().x * 0.4f;
+    const auto& enemies = anthill.GetEnemies(); //получаем ссылку на врагов
+    const float centerX = window.getSize().x * 0.4f;//координаты центра
     const float centerY = window.getSize().y * 0.5f;
     const float anthillRadius = anthill.GetSize() * 20.f;
 
     for (const auto& enemy : enemies) {
         if (!enemy.IsAlive()) continue;
 
-        float angle = static_cast<float>(rand() % 360) * 3.14159f / 180.f;
+        float angle = static_cast<float>(rand() % 360) * 3.14159f / 180.f;//вычисляем случайный угол в радианах(!)
         float distance = anthillRadius + 50.f + rand() % 100;
-        float x = centerX + cos(angle) * distance;
+        float x = centerX + cos(angle) * distance; //размещает врагов вокруг муравейника случайным образом
         float y = centerY + sin(angle) * distance;
 
-        sf::CircleShape body(12.f);
+        sf::CircleShape body(12.f);//тело врага(круг)
         body.setPosition(x, y);
         body.setFillColor(sf::Color(255, 50, 50));
         body.setOutlineThickness(2.f);
         body.setOutlineColor(sf::Color::Black);
         window.draw(body);
 
-        sf::CircleShape eye1(3.f), eye2(3.f);
+        sf::CircleShape eye1(3.f), eye2(3.f);//глаза
         eye1.setPosition(x + 5.f, y + 2.f);
         eye2.setPosition(x + 15.f, y + 2.f);
         eye1.setFillColor(sf::Color::White);
@@ -224,8 +224,8 @@ void Visualizer::drawEnemies() {
         window.draw(eye1);
         window.draw(eye2);
 
-        float strengthPercent = enemy.GetStrength() / 100.f;
-        sf::RectangleShape strengthBar(sf::Vector2f(24.f * strengthPercent, 3.f));
+        float strengthPercent = enemy.GetStrength() / 100.f;//сила врага от 0 до 1
+        sf::RectangleShape strengthBar(sf::Vector2f(24.f * strengthPercent, 3.f)); //полоса здоровья
         strengthBar.setPosition(x - 2.f, y + 25.f);
         strengthBar.setFillColor(strengthPercent > 0.6f ? sf::Color::Red : strengthPercent > 0.3f ? sf::Color(255, 165, 0) : sf::Color::Yellow);
         window.draw(strengthBar);
@@ -237,3 +237,57 @@ void Visualizer::drawEnemies() {
         }
     }
 } 
+void Visualizer::drawResources() {
+    sf::Text foodText("Food: " + std::to_string(anthill.GetFoodAmount()), font, 16);
+    foodText.setPosition(20.f, 20.f);
+    window.draw(foodText);
+
+    sf::Text materialsText("Materials: " + std::to_string(anthill.GetBuildingMaterials()), font, 16);
+    materialsText.setPosition(20.f, 50.f);
+    window.draw(materialsText);
+}
+
+void Visualizer::drawStatistics() {
+    std::stringstream statsStream;
+    statsStream << "Ants: " << anthill.GetAntCount() << "\nDay: " << currentDay;
+    sf::Text statsText(statsStream.str(), font, 16);
+    statsText.setPosition(20.f, 80.f);
+    window.draw(statsText);
+}
+
+void Visualizer::drawLegend() {
+    static const std::vector<std::pair<std::string, sf::Color>> legendItems = {
+        {"NoRole", sf::Color(180, 180, 180)},
+        {"Nurse", sf::Color(255, 153, 204)},
+        {"Soldier", sf::Color(128, 128, 0)},
+        {"Shepherd", sf::Color(255, 165, 0)},
+        {"Forager", sf::Color(255, 255, 0)},
+        {"Builder", sf::Color(80, 80, 220)},
+        {"Cleaner", sf::Color(180, 100, 220)},
+        {"Enemy", sf::Color(220, 80, 80)}
+    };
+
+    sf::RectangleShape legendBg(sf::Vector2f(160.f, 210.f));
+    legendBg.setPosition(window.getSize().x - 170.f, 20.f);
+    legendBg.setFillColor(sf::Color(255, 255, 255, 200));
+    legendBg.setOutlineThickness(1.f);
+    legendBg.setOutlineColor(sf::Color::Black);
+    window.draw(legendBg);
+
+    sf::Text legendTitle("Ant Roles:", font, 16);
+    legendTitle.setPosition(window.getSize().x - 120.f, 15.f);
+    window.draw(legendTitle);
+
+    for (size_t i = 0; i < legendItems.size(); ++i) {
+        sf::CircleShape icon(8.f);
+        icon.setPosition(window.getSize().x - 160.f, 55.f + i * 22.f);
+        icon.setFillColor(legendItems[i].second);
+        icon.setOutlineThickness(1.f);
+        icon.setOutlineColor(sf::Color::Black);
+        window.draw(icon);
+
+        sf::Text label(legendItems[i].first, font, 14);
+        label.setPosition(window.getSize().x - 145.f, 52.f + i * 22.f);
+        window.draw(label);
+    }
+}
