@@ -184,3 +184,56 @@ void Visualizer::drawAnts() {
         }
     }
 }
+void Visualizer::drawLarvae() {
+    const auto& ants = anthill.GetAnts();
+    for (const auto& ant : ants) {
+        if (ant->GetRoleName() == "NoRole") {
+            sf::CircleShape larva(10.f);
+            larva.setFillColor(sf::Color(200, 200, 200));
+            window.draw(larva);
+        }
+    }
+}
+
+void Visualizer::drawEnemies() {
+    const auto& enemies = anthill.GetEnemies();
+    const float centerX = window.getSize().x * 0.4f;
+    const float centerY = window.getSize().y * 0.5f;
+    const float anthillRadius = anthill.GetSize() * 20.f;
+
+    for (const auto& enemy : enemies) {
+        if (!enemy.IsAlive()) continue;
+
+        float angle = static_cast<float>(rand() % 360) * 3.14159f / 180.f;
+        float distance = anthillRadius + 50.f + rand() % 100;
+        float x = centerX + cos(angle) * distance;
+        float y = centerY + sin(angle) * distance;
+
+        sf::CircleShape body(12.f);
+        body.setPosition(x, y);
+        body.setFillColor(sf::Color(255, 50, 50));
+        body.setOutlineThickness(2.f);
+        body.setOutlineColor(sf::Color::Black);
+        window.draw(body);
+
+        sf::CircleShape eye1(3.f), eye2(3.f);
+        eye1.setPosition(x + 5.f, y + 2.f);
+        eye2.setPosition(x + 15.f, y + 2.f);
+        eye1.setFillColor(sf::Color::White);
+        eye2.setFillColor(sf::Color::White);
+        window.draw(eye1);
+        window.draw(eye2);
+
+        float strengthPercent = enemy.GetStrength() / 100.f;
+        sf::RectangleShape strengthBar(sf::Vector2f(24.f * strengthPercent, 3.f));
+        strengthBar.setPosition(x - 2.f, y + 25.f);
+        strengthBar.setFillColor(strengthPercent > 0.6f ? sf::Color::Red : strengthPercent > 0.3f ? sf::Color(255, 165, 0) : sf::Color::Yellow);
+        window.draw(strengthBar);
+
+        if (showAntRoles) {
+            sf::Text enemyText("Enemy", font, 12);
+            enemyText.setPosition(x - 10.f, y - 20.f);
+            window.draw(enemyText);
+        }
+    }
+} 
