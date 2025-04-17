@@ -44,3 +44,31 @@ void Visualizer::initFont() {
         }
     }
 }
+void Visualizer::run() {
+    std::cout << "Entering main loop" << std::endl;
+
+    sf::Clock clock;
+    while (window.isOpen()) {
+        float deltaTime = clock.restart().asSeconds();
+        handleEvents();
+
+        if (!paused) {
+            GenerateRandomEvents();
+            anthill.Update();
+            currentDay++;
+        }
+
+        render();
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    }
+
+    std::cout << "Main loop exited" << std::endl;
+}
+
+void Visualizer::handleEvents() {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed)
+            window.close();
+    }
+}
