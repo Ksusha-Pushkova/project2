@@ -9,7 +9,7 @@ Anthill::Anthill(int initialSize)
     : size(initialSize), maxAnts(initialSize * 10), foodAmount(200), buildingMaterials(50), isUnderAttack(false) 
 {
     
-    const std::vector<std::function<std::unique_ptr<Role>()>> roleFactories = {
+    const std::vector<std::function<std::unique_ptr<Role>()>> roleFactories = { //cоздаём функции для создания ролей
         []() { return std::make_unique<Nurse>(); },
         []() { return std::make_unique<Soldier>(); },
         []() { return std::make_unique<Shepherd>(); },
@@ -18,18 +18,18 @@ Anthill::Anthill(int initialSize)
         []() { return std::make_unique<Cleaner>(); }
     };
     for (int i = 0; i < 2; ++i) {  // создаём двух врагов
-        auto enemyAnt = std::make_unique<Ant>(
-            /*age*/ 10,      // Age of the enemy
-            /*health*/ 80,   // Health of the enemy
+        auto enemyAnt = std::make_unique<Ant>( //создаём новоого муравья
+            /*age*/ 10,     
+            /*health*/ 80,   
             /*informant*/ nullptr,
             /*anthill*/ this,
             /*isEnemy*/ true 
         );
-        enemyAnt->ChangeRole(std::make_unique<EnemyRole>());
+        enemyAnt->ChangeRole(std::make_unique<EnemyRole>()); //назначаем роль врага
         AddAnt(std::move(enemyAnt));  
     }
 
-    for (int i = 0; i < std::min(10, maxAnts); ++i) {
+    for (int i = 0; i < std::min(10, maxAnts); ++i) { //создаём муравьёв
         auto ant = std::make_unique<Ant>(
             /*age*/ 0,
             /*health*/ 100,
@@ -37,8 +37,8 @@ Anthill::Anthill(int initialSize)
             /*anthill*/ this
         );
 
-        auto role = roleFactories[i % roleFactories.size()]();
-        ant->ChangeRole(std::move(role));
+        auto role = roleFactories[i % roleFactories.size()](); //выбор роли для муравья
+        ant->ChangeRole(std::move(role)); //назначаем муравью эту роль
 
         AddAnt(std::move(ant));
     }
@@ -69,10 +69,10 @@ void Anthill::AddEnemy(const Enemy& enemy) {
 }
 
 void Anthill::Update() {
-    if (buildingMaterials > 150) {
+    if (buildingMaterials > 150) { //расширение муравейника
         Expand();
     }
-    else if (buildingMaterials < 30) {
+    else if (buildingMaterials < 30) { //уменьшение
         Decay();
     }
 
@@ -97,7 +97,7 @@ void Anthill::Update() {
             }
         }
     }
-
+    //удаление мёртвых
     ants.erase(std::remove_if(ants.begin(), ants.end(),
         [](const auto& ant) { return !ant->IsAlive() || ant->GetRoleName() == "Enemy"; }),
         ants.end());

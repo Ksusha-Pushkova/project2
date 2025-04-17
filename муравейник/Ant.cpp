@@ -10,7 +10,7 @@ Ant::Ant(int initialAge, int initialHealth, Informant* informant, Anthill* anthi
     : age(initialAge), health(initialHealth), informant(informant),
     isAlive(true), homeAnthill(anthill) {
 
-    if (isEnemy) {
+    if (isEnemy) { //если муравей - враг, то создаём роль врага
         role = std::make_unique<EnemyRole>();
         std::cout << "New enemy ant created!" << std::endl;
         return;
@@ -37,18 +37,18 @@ Ant::Ant(int initialAge, int initialHealth, Informant* informant, Anthill* anthi
         }
     }
     else if (age < 50) {
-        if (rand() % 2 == 0) {
+        if (rand() % 2 == 0) { //с вероятностью 50% роль собирателя
             role = std::make_unique<Forager>();
         }
         else {
-            role = std::make_unique<Builder>();
+            role = std::make_unique<Builder>();//с такой же вероятностью роль строителя
         }
     }
     else {
         role = std::make_unique<Cleaner>();
     }
 
-    if (role && informant) {
+    if (role && informant) { //если у муравья есть роль, он подписывается на события
         informant->Subscribe(role->GetSubscribedEventType(),
             [this](EventType e) { OnEvent(e); });
     }
@@ -56,14 +56,14 @@ Ant::Ant(int initialAge, int initialHealth, Informant* informant, Anthill* anthi
 }
 
 void Ant::Update() {
-    if (!isAlive) return;
+    if (!isAlive) return; //если муравей мёртв, завершаем работу
 
     std::cout << "Ant " << this << " (Age: " << age << ", Health: " << health << ", Role: " << GetRoleName() << "): Updating" << std::endl;
 
     age++;
-    health = std::min(100, health - 1); 
+    health = std::min(100, health - 1); //гарантирует, что здоровье не превысит 100
 
-    if (age == 5 || age == 15 || age == 30 || age == 50) {
+    if (age == 5 || age == 15 || age == 30 || age == 50) { //меняет роль при достижении переходного возраста
         std::unique_ptr<Role> newRole;
 
         if (age == 5) {
@@ -100,19 +100,19 @@ void Ant::Update() {
         }
     }
 
-    if (health <= 0) {
+    if (health <= 0) { //если здоровье меньше 0, муравей умират, функция завершает работу
         isAlive = false;
         std::cout << "Ant " << this << ": Died" << std::endl;
         return;
     }
 
-    Work();
+    Work(); //если муравей жив и роль не поменял, то выполняется работа, характерная текущей роли муравья.
 }
 
 
-void Ant::OnEvent(EventType event) {
+void Ant::OnEvent(EventType event) { //передает событие текущей роли муравья для обработки
     if (role) {
-        role->HandleEvent(*this, event);
+        role->HandleEvent(*this, event); //обрабатывает событие в соответствии с поведением, определенным для данной роли
     }
 }
 void Ant::Work() {
@@ -125,19 +125,19 @@ void Ant::ChangeRole(std::unique_ptr<Role> newRole) {
     if (!newRole) return;
 
     if (role && informant) {
-        informant->Unsubscribe(role->GetSubscribedEventType(),
+        informant->Unsubscribe(role->GetSubscribedEventType(), //если у муравья есть роль , муравей отписывается от текущих событий, связанных с его старой ролью
             [this](EventType e) { OnEvent(e); });
     }
 
-    role = std::move(newRole);
+    role = std::move(newRole); //старая роль уничтожается
 
     if (role && informant) {
-        informant->Subscribe(role->GetSubscribedEventType(),
+        informant->Subscribe(role->GetSubscribedEventType(), //муравей подписывается на события, связанные с его новой ролью
             [this](EventType e) { OnEvent(e); });
     }
 }
 
-void Ant::TakeDamage(int damage) {
+void Ant::TakeDamage(int damage) { //уменьшает здоровье муравья от урона
     health = std::max(0, health - damage);
     if (health <= 0) {
         isAlive = false;
