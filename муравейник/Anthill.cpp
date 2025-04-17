@@ -122,7 +122,35 @@ void Anthill::TryStealFood(Ant& ant) {
     }
 }
 
-    
+Enemy* Anthill::GetNearestEnemy() {
+    if (!enemies.empty()) {
+        return &enemies.front(); 
+    }
+    return nullptr;
+}
+
+void Anthill::RemoveDeadEnemies() {
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [](const Enemy& e) { return !e.IsAlive(); }),
+        enemies.end()
+    );
+}
+
+bool Anthill::TakeFood(int amount) {
+    if (foodAmount >= amount) {
+        foodAmount -= amount;
+        return true;
+    }
+    return false;
+}
+void Anthill::ProtectLarvae() {
+    for (auto& ant : ants) {
+        if (ant->GetRoleName() == "Nurse") {
+            ant->Heal(5);
+        }
+    }
+}
     
 
     
