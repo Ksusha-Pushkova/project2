@@ -1,3 +1,4 @@
+#include <functional>
 #include "Anthill.h"
 #include "Ant.h"
 #include "Enemy.h"
@@ -62,8 +63,12 @@ void Anthill::AddBuildingMaterials(int amount) {
 
 
 
+void Anthill::AddEnemy(const Enemy& enemy) {
+    enemies.push_back(enemy);
+    isUnderAttack = true;
+}
+
 void Anthill::Update() {
-    
     if (buildingMaterials > 100) {
         Expand();
     }
@@ -71,10 +76,51 @@ void Anthill::Update() {
         Decay();
     }
 
-    
     for (auto& ant : ants) {
         ant->Update();
     }
+
+    for (auto& ant : ants) {
+        if (ant->GetRoleName() == "Enemy") {
+            TryStealFood(*ant);
+        }
+    }
+
+    for (auto& enemy : enemies) {
+        for (auto& ant : ants) {
+            if (ant->GetRoleName() == "Soldier") {
+                enemy.FightSoldier(*ant);
+                if (!enemy.IsAlive()) {
+                    std::cout << "Враг уничтожен!" << std::endl;
+                    break; 
+                }
+            }
+        }
+    }
+
+    ants.erase(std::remove_if(ants.begin(), ants.end(),
+        [](const auto& ant) { return !ant->IsAlive() || ant->GetRoleName() == "Enemy"; }),
+        ants.end());
+
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
+        [](const Enemy& e) { return !e.IsAlive(); }),
+        enemies.end());
+    if (isUnderAttack) {
+        HandleAttack();
+        isUnderAttack = false;
+    }
+}
+void Anthill::TryStealFood(Ant& ant) {
+    std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> dist(0, 100);
+    if (dist(rng) < 20) {
+        int foodStolen = 5 + dist(rng) % 10; 
+        if (foodAmount >= foodStolen) {
+            foodAmount -= foodStolen;
+            std::cout << "Enemy stole " << foodStolen << " food from anthill!" << std::endl;
+        }
+    }
+}
 
     
     
@@ -84,7 +130,7 @@ void Anthill::Update() {
 
     
     
-}
+
 
 void Anthill::Expand() {
     size++;
