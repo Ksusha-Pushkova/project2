@@ -6,7 +6,7 @@
 #include <random>
 #include <iostream>
 Anthill::Anthill(int initialSize)
-    : size(initialSize), maxAnts(initialSize * 10), foodAmount(100), buildingMaterials(50), isUnderAttack(false) 
+    : size(initialSize), maxAnts(initialSize * 10), foodAmount(200), buildingMaterials(50), isUnderAttack(false) 
 {
     
     const std::vector<std::function<std::unique_ptr<Role>()>> roleFactories = {
