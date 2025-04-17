@@ -72,3 +72,36 @@ void Visualizer::handleEvents() {
             window.close();
     }
 }
+void Visualizer::GenerateRandomEvents() {
+    int eventType = rand() % 100;
+
+    if (eventType < 10) {
+        Enemy enemy(rand() % 20 + 10);
+        anthill.AddEnemy(enemy);
+        globalInformant.Notify(EventType::EnemySpotted);
+        cout << "!!! Атака врага началась !!!" << endl;
+    }
+    else if (eventType < 20) {
+        anthill.AddBuildingMaterials(20);
+        globalInformant.Notify(EventType::HeavyBranchFound);
+        cout << "Обнаружена тяжелая ветка!" << endl;
+    }
+    else if (eventType < 30) {
+        anthill.AddFood(50);
+        globalInformant.Notify(EventType::LargeFoodFound);
+        cout << "Обнаружено много еды!" << endl;
+    }
+    else if (eventType < 35 && anthill.GetFoodAmount() < 20) {
+        globalInformant.Notify(EventType::StorageEmpty);
+        cout << "Внимание! Запасы пусты!" << endl;
+    }
+}
+
+void Visualizer::PrintAnthillStatus() {
+    std::cout << "\n=== Статус муравейника ===" << std::endl;
+    std::cout << "Размер: " << anthill.GetSize() << std::endl;
+    std::cout << "Еда: " << anthill.GetFoodAmount() << std::endl;
+    std::cout << "Материалы: " << anthill.GetBuildingMaterials() << std::endl;
+    std::cout << "Муравьи: " << anthill.GetAntCount() << std::endl;
+    std::cout << "===============================\n" << std::endl;
+}
