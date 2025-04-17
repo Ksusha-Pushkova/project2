@@ -29,7 +29,7 @@ Anthill::Anthill(int initialSize)
         AddAnt(std::move(enemyAnt));  
     }
 
-    for (int i = 0; i < std::min(10, maxAnts); ++i) { //создаЄм муравьЄв
+    for (int i = 0; i < std::min(20, maxAnts); ++i) { //создаЄм муравьЄв
         auto ant = std::make_unique<Ant>(
             /*age*/ 0,
             /*health*/ 100,
@@ -42,7 +42,7 @@ Anthill::Anthill(int initialSize)
 
         AddAnt(std::move(ant));
     }
-    
+    std::srand(static_cast<unsigned>(time(nullptr)));
     
 }
 
@@ -69,12 +69,35 @@ void Anthill::AddEnemy(const Enemy& enemy) {
 }
 
 void Anthill::Update() {
+    static bool initialized = false;
+    if (!initialized) {
+        std::srand(static_cast<unsigned>(time(nullptr)));
+        initialized = true;
+    }
+
+    // —оздание новых муравьЄв (с проверками)
+    if (!roleFactories.empty() && ants.size() < maxAnts && foodAmount > 50) {
+        auto ant = std::make_unique<Ant>(0, 100, nullptr, this);
+        size_t roleIndex = rand() % roleFactories.size();
+        ant->ChangeRole(roleFactories[roleIndex]());
+        AddAnt(std::move(ant));
+        foodAmount -= 10;
+
+        std::cout << "New ant created! Total: " << ants.size()
+            << ", Food left: " << foodAmount << std::endl;
+    }
     if (buildingMaterials > 150) { //расширение муравейника
         Expand();
     }
     else if (buildingMaterials < 30) { //уменьшение
         Decay();
     }
+    if (foodAmount <= 0) {
+        for (auto& ant : ants) {
+            ant->TakeDamage(1); // тер€ют здоровье без еды
+        }
+    }
+
 
     for (auto& ant : ants) {
         ant->Update();
@@ -96,6 +119,7 @@ void Anthill::Update() {
                 }
             }
         }
+
     }
     //удаление мЄртвых
     ants.erase(std::remove_if(ants.begin(), ants.end(),
@@ -109,6 +133,7 @@ void Anthill::Update() {
         HandleAttack();
         isUnderAttack = false;
     }
+    
 }
 void Anthill::TryStealFood(Ant& ant) {
     std::mt19937 rng(std::random_device{}());

@@ -15,6 +15,7 @@ private:
 
     std::vector<std::unique_ptr<Ant>> ants;  // Определение вектора муравьев
     std::vector<Enemy> enemies;
+    std::vector<std::function<std::unique_ptr<Role>()>> roleFactories;
 
 public:
     explicit Anthill(int initialSize = 5);
