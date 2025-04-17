@@ -105,3 +105,82 @@ void Visualizer::PrintAnthillStatus() {
     std::cout << "Муравьи: " << anthill.GetAntCount() << std::endl;
     std::cout << "===============================\n" << std::endl;
 }
+void Visualizer::render() {
+    window.clear(sf::Color(192, 192, 192)); 
+    drawAnthill();
+    drawAnts();
+    drawLarvae();
+    drawEnemies();
+    if (showResources) drawResources();
+    if (showStats) drawStatistics();
+    if (showLegend) drawLegend();
+    window.display();
+}
+
+void Visualizer::drawAnthill() {
+    sf::CircleShape anthillShape(anthill.GetSize() * 20.f);
+    anthillShape.setPosition(
+        window.getSize().x * 0.4f - anthill.GetSize() * 20.f,
+        window.getSize().y * 0.5f - anthill.GetSize() * 20.f
+    );
+    anthillShape.setFillColor(sf::Color(139, 69, 19));
+    window.draw(anthillShape);
+}
+
+void Visualizer::drawAnts() {
+    const auto& ants = anthill.GetAnts();
+    if (ants.empty()) return;
+
+    const float centerX = window.getSize().x * 0.4f;
+    const float centerY = window.getSize().y * 0.5f;
+    const float anthillRadius = anthill.GetSize() * 20.f;
+
+    static const std::map<std::string, sf::Color> roleColors = {
+        {"NoRole", sf::Color(180, 180, 180)},
+        {"Nurse", sf::Color(255, 153, 204)},
+        {"Soldier", sf::Color(128, 128, 0)},
+        {"Shepherd", sf::Color(255, 165, 0)},
+        {"Forager", sf::Color(255, 255, 0)},
+        {"Builder", sf::Color(80, 80, 220)},
+        {"Cleaner", sf::Color(180, 100, 220)},
+        {"Enemy", sf::Color(220, 80, 80)}
+    };
+
+    for (size_t i = 0; i < ants.size(); ++i) {
+        if (!ants[i]->IsAlive()) continue;
+
+        std::string roleName = ants[i]->GetRoleName();
+        sf::Color antColor = roleColors.at(roleName);
+
+        float angle = 2 * 3.14159f * i / ants.size();
+        float distance = anthillRadius + 30.f;
+        float x = centerX + cos(angle) * distance;
+        float y = centerY + sin(angle) * distance;
+
+        sf::CircleShape body(8.f);
+        body.setPosition(x, y);
+        body.setFillColor(antColor);
+        body.setOutlineThickness(1.f);
+        body.setOutlineColor(sf::Color::Black);
+        window.draw(body);
+
+        sf::CircleShape head(5.f);
+        head.setPosition(x + 10.f, y - 3.f);
+        head.setFillColor(antColor);
+        window.draw(head);
+
+        if (showAntRoles) {
+            sf::Text roleText(roleName, font, 10);
+            roleText.setPosition(x - 10.f, y - 15.f);
+            window.draw(roleText);
+        }
+
+        if (showAntHealth) {
+            float healthPercent = ants[i]->GetHealth() / 100.f;
+            sf::RectangleShape healthBar(sf::Vector2f(16.f * healthPercent, 2.f));
+            healthBar.setPosition(x - 8.f, y + 15.f);
+            healthBar.setFillColor(healthPercent > 0.6f ? sf::Color::Green : healthPercent > 0.3f ? sf::Color::Yellow : sf::Color::Red);
+            window.draw(healthBar);
+        }
+    }
+}
