@@ -5,7 +5,6 @@
 #include <ctime>
 #include <iostream> 
 
-// NoRole 
 void NoRole::Work(Ant& ant) {
     ant.Heal(1); 
 }
@@ -27,7 +26,7 @@ void NoRole::HandleEvent(Ant& ant, EventType event) {
 // Nurse
 void Nurse::Work(Ant& ant) {
     if (auto anthill = ant.GetAnthill()) {
-        anthill->AddFood(-1); 
+        anthill->AddFood(-0.5f); 
         ant.Heal(2); 
     }
 }
@@ -51,12 +50,12 @@ void Nurse::HandleEvent(Ant& ant, EventType event) {
 // Soldier
 void Soldier::Work(Ant& ant) {
     if (auto anthill = ant.GetAnthill()) {
-        anthill->AddFood(-2); 
+        anthill->AddFood(-1); 
     }
 }
 
 EventType Soldier::GetSubscribedEventType() const {
-    return EventType::EnemySpotted; // ????????? ?? ??????
+    return EventType::EnemySpotted; 
 }
 
 std::string Soldier::GetName() const {
@@ -65,7 +64,7 @@ std::string Soldier::GetName() const {
 
 void Soldier::HandleEvent(Ant& ant, EventType event) {
     if (event == EventType::EnemySpotted) {
-        ant.TakeDamage(5); // ???????? ???? ??? ??????
+        ant.TakeDamage(5); 
         std::cout << "Ant " << &ant << " (Soldier): Responding to enemy spotted, taking damage" << std::endl;
         if (auto anthill = ant.GetAnthill()) {
             if (auto enemy = anthill->GetNearestEnemy()) {
@@ -103,9 +102,9 @@ void Forager::Work(Ant& ant) {
     std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr)));
     std::uniform_int_distribution<int> dist(0, 100);
 
-    if (dist(rng) < 20) { // 20% ???? ????? ???
+    if (dist(rng) < 40) { 
         if (auto anthill = ant.GetAnthill()) {
-            int foodFound = 15 + dist(rng) % 10;
+            int foodFound = 25 + dist(rng) % 20;
             anthill->AddFood(foodFound);
             
         }
